@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/logo.png" alt="Nuclear Energy Intelligence logo" width="140"/>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/monarchcastletech/NuclearEnergyIntelligence/main/docs/logo-dark.png"><img src="docs/logo.png" alt="Nuclear Energy Intelligence logo" width="140"></picture>
   <!-- CODEX: generate a clean product logo — a stylized reactor containment dome / atomic core rendered as a minimalist crest in deep navy (#0b1f3a) and a single warning-red accent, matching the Monarch Castle dark, monospace intelligence aesthetic. Transparent background, square. -->
 
   # Nuclear Energy Intelligence
