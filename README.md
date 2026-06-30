@@ -29,13 +29,13 @@
 
 ## 🖼️ Preview
 <!-- CODEX: capture real screenshots of the running portal (npm run dev) and drop them into docs/ -->
-![Nuclear Energy Intelligence — global reactor & chokepoint map](docs/screenshot-1.png)
+<!-- ![Nuclear Energy Intelligence — global reactor & chokepoint map](docs/screenshot-1.png) (screenshot pending) -->
 <!-- CODEX: dark-theme Leaflet world map showing reactor markers and the supply-chain chokepoint toggle active -->
 
-![Nuclear Energy Intelligence — exposure ranking table](docs/screenshot-2.png)
+<!-- ![Nuclear Energy Intelligence — exposure ranking table](docs/screenshot-2.png) (screenshot pending) -->
 <!-- CODEX: the Exposure Ranking Array table, France at top, showing nuclear share %, reactor count, net capacity -->
 
-![Nuclear Energy Intelligence — capital & retirement analytics](docs/screenshot-3.png)
+<!-- ![Nuclear Energy Intelligence — capital & retirement analytics](docs/screenshot-3.png) (screenshot pending) -->
 <!-- CODEX: side-by-side of the Capital Scatterplot (delay vs cost) and the Retirement Cliff bar chart -->
 
 ## 🧭 What it does
