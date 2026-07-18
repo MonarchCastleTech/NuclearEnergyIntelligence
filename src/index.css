@@ -1,35 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Geist+Mono:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Spectral:wght@500;600;700&display=swap');
 
 :root {
-  --bg: #09090b;
-  --bg-card: #111114;
-  --bg-elevated: #18181b;
-  --border: #1f1f23;
-  --border-hover: #2a2a2e;
+  --bg: #15130f;
+  --bg-card: #17140f;
+  --bg-elevated: #191711;
+  --border: #2c2820;
+  --border-hover: #4a4335;
 
-  --text: #e8e8ec;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
+  --text: #ece6d8;
+  --text-secondary: #c6beae;
+  --text-muted: #9a9284;
 
-  --accent: #dc2626;
-  /* Red styling for Nuclear Portal */
-  --accent-dim: rgba(220, 38, 38, 0.12);
+  --accent: #c9a24b;
+  --accent-dim: rgba(201, 162, 75, 0.12);
 
-  --red: #dc2626;
-  --orange: #ea580c;
-  --yellow: #ca8a04;
+  --red: #e2554f;
+  --orange: #d78243;
+  --yellow: #c9a24b;
 
-  --red-bg: rgba(220, 38, 38, 0.10);
-  --orange-bg: rgba(234, 88, 12, 0.10);
-  --yellow-bg: rgba(202, 138, 4, 0.10);
+  --red-bg: rgba(226, 85, 79, 0.12);
+  --orange-bg: rgba(215, 130, 67, 0.12);
+  --yellow-bg: rgba(201, 162, 75, 0.12);
 
   /* Fonts */
-  --font-heading: 'Instrument Sans', system-ui, sans-serif;
-  --font-body: 'Geist', system-ui, sans-serif;
-  --font-mono: 'Geist Mono', monospace;
-  --font-inter: 'Inter', sans-serif;
+  --font-heading: 'Spectral', Georgia, serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-inter: 'IBM Plex Sans', system-ui, sans-serif;
 
   --radius: 2px;
   --max-width: 1200px;
@@ -84,6 +81,16 @@ a {
 
 a:hover {
   color: var(--accent);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /* Base utility classes */

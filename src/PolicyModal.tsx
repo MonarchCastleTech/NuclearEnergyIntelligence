@@ -10,11 +10,21 @@ interface PolicyModalProps {
 const PolicyModal: React.FC<PolicyModalProps> = ({ title, subtitle, content, onClose }) => {
     // Lock body scroll when modal is open
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = 'unset';
+        const previousOverflow = document.body.style.overflow;
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
         };
-    }, []);
+
+        document.body.style.overflow = 'hidden';
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onClose]);
 
     return (
         <div className="modal-overlay" onClick={onClose} style={{
@@ -31,7 +41,13 @@ const PolicyModal: React.FC<PolicyModalProps> = ({ title, subtitle, content, onC
             alignItems: 'center',
             padding: 'var(--sp-6)'
         }}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{
+            <div
+                className="modal-content"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="policy-modal-title"
+                onClick={(e) => e.stopPropagation()}
+                style={{
                 backgroundColor: 'var(--bg)',
                 border: '1px solid var(--border)',
                 width: '100%',
@@ -51,14 +67,14 @@ const PolicyModal: React.FC<PolicyModalProps> = ({ title, subtitle, content, onC
                     borderBottom: '1px solid var(--border)'
                 }}>
                     <div>
-                        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', margin: '0 0 var(--sp-2) 0', color: 'var(--text)', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
+                        <h2 id="policy-modal-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', margin: '0 0 var(--sp-2) 0', color: 'var(--text)', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
                             {title}
                         </h2>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--red)', letterSpacing: '0.05em' }}>
                             {subtitle}
                         </div>
                     </div>
-                    <button onClick={onClose} style={{
+                    <button autoFocus aria-label="Close dialog" onClick={onClose} style={{
                         background: 'none',
                         border: 'none',
                         color: 'var(--text-muted)',
