@@ -130,7 +130,10 @@ The preview is maintained as a repository asset; the live interface or generated
 
 ## Data and methodology
 
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the implementation files in this repository. Source dates, transformation steps, and known gaps must travel with analytical outputs.
+- [README.md](README.md)
+- [src/](src/)
+
+These repository-specific sources define the methodology or provenance boundary. Source dates, transformation steps, and known gaps must travel with analytical outputs.
 
 ## Update frequency
 
@@ -150,13 +153,8 @@ Run only in a trusted development environment and review repository-specific pre
 
 ## Architecture
 
-- `build_log.txt` — repository entry point or configuration.
-- `deploy_log.txt` — repository entry point or configuration.
-- `eslint.config.js` — repository entry point or configuration.
-- `index.html` — repository entry point or configuration.
-- `package-lock.json` — repository entry point or configuration.
-- `package.json` — repository entry point or configuration.
-- `public/` — implementation or data module.
+- `src/` — repository-specific implementation, data, or configuration boundary.
+- `public/` — repository-specific implementation, data, or configuration boundary.
 
 ## Tests
 
