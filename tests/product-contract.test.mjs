@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -13,6 +14,11 @@ const workflowUrl = new URL("../.github/workflows/pages.yml", import.meta.url);
 const workflow = existsSync(workflowUrl) ? readFileSync(workflowUrl, "utf8") : "";
 
 test("approved product and masterbrand lockup is explicit", () => {
+  const productLogo = readFileSync(new URL("../public/logo.png", import.meta.url));
+  assert.equal(
+    createHash("sha256").update(productLogo).digest("hex"),
+    "5822e425d9b32e58c132737f52d83d6b1f583d51c46dba4f8c103db9b05b9d85",
+  );
   assert.match(app, /src="\/NuclearEnergyIntelligence\/logo\.png"/);
   assert.match(app, /alt="Nuclear Energy Intelligence"/);
   assert.match(app, /src="\/NuclearEnergyIntelligence\/mct-logo\.png"/);
