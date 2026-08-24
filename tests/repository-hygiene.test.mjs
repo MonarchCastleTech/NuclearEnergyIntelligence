@@ -19,7 +19,7 @@ test("MonarchCastleTech/NuclearEnergyIntelligence exposes the complete repositor
   assert.ok(match, "README must include the managed repository-hygiene block");
   assert.ok(contract.includes("Interactive geopolitical intelligence brief mapping global nuclear exposure, supply-chain chokepoints, fuel-cycle concentration, and the coming reactor retirement cliff."), "README purpose must match the canonical registry");
   assert.match(contract, /lifecycle-active/);
-  assert.ok(contract.includes("https://monarchcastle.tech/NuclearEnergyIntelligence/"));
+  assert.ok(contract.includes("https://monarchcastletech.github.io/NuclearEnergyIntelligence/"));
   for (const heading of expectedHeadings) assert.ok(contract.includes(`## ${heading}`), `missing heading: ${heading}`);
   for (const evidence of methodologyEvidence) {
     assert.ok(existsSync(resolve(root, evidence)), `missing methodology evidence: ${evidence}`);
