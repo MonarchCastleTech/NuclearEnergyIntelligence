@@ -100,13 +100,16 @@ test("shared design tokens and responsive evidence-heavy layouts are enforced", 
 });
 
 test("standard Pages workflow validates and deploys the same Vite artifact", () => {
-  assert.match(workflow, /node-version:\s*20/);
+  assert.match(workflow, /node-version:\s*24/);
   assert.match(workflow, /npm ci/);
   assert.match(workflow, /npm test/);
   assert.match(workflow, /npm run lint/);
   assert.match(workflow, /npm run build/);
   assert.match(workflow, /path:\s*\.\/dist/);
-  assert.match(workflow, /actions\/deploy-pages@v4/);
+  assert.match(workflow, /actions\/checkout@v7/);
+  assert.match(workflow, /actions\/setup-node@v7/);
+  assert.match(workflow, /actions\/upload-pages-artifact@v5/);
+  assert.match(workflow, /actions\/deploy-pages@v5/);
   assert.match(workflow, /pages:\s*write/);
   assert.match(workflow, /id-token:\s*write/);
   assert.match(workflow, /schedule:/);
