@@ -4,9 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: "17 04 * * 1"
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -30,11 +32,32 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Refresh keyless public series
+        if: github.event_name != 'push'
+        run: npm run refresh:data
+
+      - name: Preserve refreshed last-known-good data
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/exposure.json src/data/freshness.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: refresh nuclear generation shares"
+            git push
+          fi
+
       - name: Validate product contract
-        run: node --test tests/*.test.mjs
+        run: npm test
+
+      - name: Lint application
+        run: npm run lint
 
       - name: Build Vite artifact
         run: npm run build
+
+      - name: Verify deployable artifact
+        run: test -s dist/index.html && test -d dist/assets
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

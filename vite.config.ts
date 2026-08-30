@@ -5,4 +5,14 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/NuclearEnergyIntelligence/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          maps: ['leaflet', 'react-leaflet'],
+          charts: ['recharts'],
+        },
+      },
+    },
+  },
 })

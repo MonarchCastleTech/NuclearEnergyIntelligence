@@ -2,161 +2,161 @@
     {
         "countryCode": "FR",
         "countryName": "France",
-        "nuclearSharePct": 64.8,
+        "nuclearSharePct": 68.8,
         "activeReactorCount": 56,
         "activeNetCapacityMw": 61370
     },
     {
         "countryCode": "SK",
         "countryName": "Slovakia",
-        "nuclearSharePct": 61.3,
+        "nuclearSharePct": 66.4,
         "activeReactorCount": 5,
         "activeNetCapacityMw": 2302
     },
     {
+        "countryCode": "CZ",
+        "countryName": "Czechia",
+        "nuclearSharePct": 42.3,
+        "activeReactorCount": 6,
+        "activeNetCapacityMw": 3963
+    },
+    {
         "countryCode": "HU",
         "countryName": "Hungary",
-        "nuclearSharePct": 48.8,
+        "nuclearSharePct": 40,
         "activeReactorCount": 4,
         "activeNetCapacityMw": 1916
     },
     {
         "countryCode": "FI",
         "countryName": "Finland",
-        "nuclearSharePct": 42.0,
+        "nuclearSharePct": 39.9,
         "activeReactorCount": 5,
         "activeNetCapacityMw": 4394
     },
     {
-        "countryCode": "BE",
-        "countryName": "Belgium",
-        "nuclearSharePct": 41.2,
-        "activeReactorCount": 5,
-        "activeNetCapacityMw": 3908
-    },
-    {
-        "countryCode": "BG",
-        "countryName": "Bulgaria",
-        "nuclearSharePct": 40.5,
-        "activeReactorCount": 2,
-        "activeNetCapacityMw": 2006
-    },
-    {
-        "countryCode": "CZ",
-        "countryName": "Czechia",
-        "nuclearSharePct": 40.0,
-        "activeReactorCount": 6,
-        "activeNetCapacityMw": 3963
-    },
-    {
         "countryCode": "SI",
         "countryName": "Slovenia",
-        "nuclearSharePct": 36.8,
+        "nuclearSharePct": 39.3,
         "activeReactorCount": 1,
         "activeNetCapacityMw": 688
     },
     {
+        "countryCode": "BG",
+        "countryName": "Bulgaria",
+        "nuclearSharePct": 39.1,
+        "activeReactorCount": 2,
+        "activeNetCapacityMw": 2006
+    },
+    {
+        "countryCode": "BY",
+        "countryName": "Belarus",
+        "nuclearSharePct": 36.6,
+        "activeReactorCount": 2,
+        "activeNetCapacityMw": 2220
+    },
+    {
+        "countryCode": "BE",
+        "countryName": "Belgium",
+        "nuclearSharePct": 33.1,
+        "activeReactorCount": 5,
+        "activeNetCapacityMw": 3908
+    },
+    {
         "countryCode": "CH",
         "countryName": "Switzerland",
-        "nuclearSharePct": 32.4,
+        "nuclearSharePct": 29.9,
         "activeReactorCount": 4,
         "activeNetCapacityMw": 2973
     },
     {
         "countryCode": "KR",
         "countryName": "Korea, Republic of",
-        "nuclearSharePct": 31.5,
+        "nuclearSharePct": 29.6,
         "activeReactorCount": 26,
         "activeNetCapacityMw": 25825
     },
     {
-        "countryCode": "AM",
-        "countryName": "Armenia",
-        "nuclearSharePct": 31.1,
-        "activeReactorCount": 1,
-        "activeNetCapacityMw": 416
-    },
-    {
-        "countryCode": "BY",
-        "countryName": "Belarus",
-        "nuclearSharePct": 28.6,
-        "activeReactorCount": 2,
-        "activeNetCapacityMw": 2220
-    },
-    {
         "countryCode": "SE",
         "countryName": "Sweden",
-        "nuclearSharePct": 28.6,
+        "nuclearSharePct": 27.6,
         "activeReactorCount": 6,
         "activeNetCapacityMw": 6944
     },
     {
-        "countryCode": "ES",
-        "countryName": "Spain",
-        "nuclearSharePct": 20.3,
-        "activeReactorCount": 7,
-        "activeNetCapacityMw": 7123
+        "countryCode": "AM",
+        "countryName": "Armenia",
+        "nuclearSharePct": 27,
+        "activeReactorCount": 1,
+        "activeNetCapacityMw": 416
     },
     {
         "countryCode": "AE",
         "countryName": "United Arab Emirates",
-        "nuclearSharePct": 19.7,
+        "nuclearSharePct": 22.9,
         "activeReactorCount": 3,
         "activeNetCapacityMw": 4011
     },
     {
         "countryCode": "RO",
         "countryName": "Romania",
-        "nuclearSharePct": 18.9,
+        "nuclearSharePct": 20.5,
         "activeReactorCount": 2,
         "activeNetCapacityMw": 1300
     },
     {
-        "countryCode": "US",
-        "countryName": "United States of America",
-        "nuclearSharePct": 18.5,
-        "activeReactorCount": 93,
-        "activeNetCapacityMw": 95835
+        "countryCode": "ES",
+        "countryName": "Spain",
+        "nuclearSharePct": 18.8,
+        "activeReactorCount": 7,
+        "activeNetCapacityMw": 7123
     },
     {
         "countryCode": "RU",
         "countryName": "Russian Federation",
-        "nuclearSharePct": 18.1,
+        "nuclearSharePct": 18.3,
         "activeReactorCount": 37,
         "activeNetCapacityMw": 27727
     },
     {
-        "countryCode": "PK",
-        "countryName": "Pakistan",
+        "countryCode": "US",
+        "countryName": "United States of America",
         "nuclearSharePct": 17.4,
-        "activeReactorCount": 6,
-        "activeNetCapacityMw": 3262
+        "activeReactorCount": 93,
+        "activeNetCapacityMw": 95835
     },
     {
         "countryCode": "CA",
         "countryName": "Canada",
-        "nuclearSharePct": 13.7,
+        "nuclearSharePct": 13.1,
         "activeReactorCount": 19,
         "activeNetCapacityMw": 13699
     },
     {
         "countryCode": "UK",
         "countryName": "United Kingdom",
-        "nuclearSharePct": 12.5,
+        "nuclearSharePct": 12.4,
         "activeReactorCount": 9,
         "activeNetCapacityMw": 5883
     },
     {
+        "countryCode": "PK",
+        "countryName": "Pakistan",
+        "nuclearSharePct": 12.2,
+        "activeReactorCount": 6,
+        "activeNetCapacityMw": 3262
+    },
+    {
         "countryCode": "JP",
         "countryName": "Japan",
-        "nuclearSharePct": 5.5,
+        "nuclearSharePct": 9.1,
         "activeReactorCount": 14,
         "activeNetCapacityMw": 12631
     },
     {
         "countryCode": "CN",
         "countryName": "China",
-        "nuclearSharePct": 4.9,
+        "nuclearSharePct": 4.6,
         "activeReactorCount": 55,
         "activeNetCapacityMw": 53152
     }

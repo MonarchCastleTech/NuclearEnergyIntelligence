@@ -59,9 +59,9 @@ Per Monarch Castle doctrine — **evidence before assertion**. The portal is dri
 | `chokepoints.json` | Heavy-forging / fuel-cycle nodes | `name`, `country`, `lat/lng`, `status`, `type`, `description` |
 | `uranium_cycle.json` | Fuel-cycle stages | `process`, `unit`, per-stage `leaders[]` with `sharePct` |
 
-**Assessment methodology.** Industrial processes are scored against the Monarch Castle **Tri-Color Severity Scale** — `IMPOSSIBLE` / `EXTREMELY DIFFICULT` / `RESTRICTED` — derived from historical permitting success rates, litigation velocity, and capital-formation requirements under modern Western regulatory regimes. The framework is documented in the in-app *Intelligence Methodology* memo.
+**Assessment methodology.** Industrial processes are scored against a three-level constraint scale — `SEVERE CONSTRAINT` / `HIGH CONSTRAINT` / `SITE-DEPENDENT` — informed by permitting, financing and delivery evidence. These are comparative assessments, not deterministic outcomes. The framework is documented in the in-app *Intelligence Methodology* memo.
 
-> **Provenance roadmap.** The current datasets are point-in-time snapshots curated by analysts. In line with house doctrine, each record should carry explicit `source`, `source_url`, `collected_at`, and `method` fields; extending the schemas with these provenance columns is the next planned hardening step.
+> **Provenance.** Nuclear generation shares refresh weekly from the keyless Our World in Data series. Detailed reactor, capacity, project and chokepoint records remain analyst-curated reference sets; source age is disclosed in the interface.
 
 ## 🛠️ Tech stack
 - **UI:** React 19 + TypeScript 5.9 (strict)
@@ -137,7 +137,7 @@ These repository-specific sources define the methodology or provenance boundary.
 
 ## Update frequency
 
-Research-release-driven; source dates must be reviewed before an updated build is published.
+Weekly automated source check and GitHub Pages deployment. If the public source is unavailable or invalid, the workflow retains the last known good dataset and records the failed check.
 
 ## Quick start
 
@@ -159,6 +159,10 @@ Run only in a trusted development environment and review repository-specific pre
 ## Tests
 
 ```shell
+npm test
+```
+
+```shell
 npm run lint
 ```
 
@@ -172,7 +176,7 @@ Original software history is maintained in Git. External datasets, reports, trad
 
 ## Forecast limitations
 
-This repository does not publish a guaranteed forecast. Any scenarios, scores, or forward-looking language are analytical aids, not facts or advice; review source dates and methodology before use.
+Scenarios and scores are comparative analytical aids. Review their source dates, assumptions and methodology before use.
 
 ## Security
 

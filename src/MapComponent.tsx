@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as L from 'leaflet';
 import reactorsData from './data/reactors.json';
 import chokepointsData from './data/chokepoints.json';
+import type { SelectedFacility } from './lib/facilities';
 
 // Minimal bounds covering the globe without wrapping indefinitely
 const MAX_BOUNDS: L.LatLngBoundsExpression = [
@@ -10,7 +11,7 @@ const MAX_BOUNDS: L.LatLngBoundsExpression = [
 ];
 
 interface MapComponentProps {
-  onSelectPlant: (plant: any) => void;
+  onSelectPlant: (plant: SelectedFacility) => void;
   filterTypes: {
     operational: boolean;
     construction: boolean;

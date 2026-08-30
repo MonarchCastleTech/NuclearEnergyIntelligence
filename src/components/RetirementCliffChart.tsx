@@ -11,6 +11,24 @@ import {
 } from 'recharts';
 import reactorsData from '../data/reactors.json';
 
+interface RetirementTooltipProps {
+    active?: boolean;
+    payload?: Array<{ value: number }>;
+    label?: string;
+}
+
+const RetirementTooltip = ({ active, payload, label }: RetirementTooltipProps) => {
+    if (active && payload?.length) {
+        return (
+            <div style={{ backgroundColor: '#000', border: '1px solid var(--border)', padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#fff' }}>
+                <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>Age: {label}</p>
+                <p style={{ margin: 0, color: 'var(--accent)' }}>Operational Reactors: {payload[0].value}</p>
+            </div>
+        );
+    }
+    return null;
+};
+
 const RetirementCliffChart: React.FC = () => {
     const data = useMemo(() => {
         const currentYear = new Date().getFullYear();
@@ -37,29 +55,17 @@ const RetirementCliffChart: React.FC = () => {
         return ageGroups;
     }, []);
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
-        if (active && payload && payload.length) {
-            return (
-                <div style={{ backgroundColor: '#000', border: '1px solid var(--border)', padding: '10px', fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#fff' }}>
-                    <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>Age: {label}</p>
-                    <p style={{ margin: 0, color: 'var(--accent)' }}>Operational Reactors: {payload[0].value}</p>
-                </div>
-            );
-        }
-        return null;
-    };
-
     return (
         <div className="intelligence-panel">
             <div className="panel-header" style={{ marginBottom: '1.5rem' }}>
                 <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', marginBottom: '0.5rem', marginTop: 0 }}>The Retirement Cliff</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, maxWidth: '600px' }}>
-                    Demographic age profile of the global operational fleet. The massive bulge in the 41-50 year cohort represents the Western build-out of the 1970s and 80s. A structural baseload power deficit is virtually guaranteed as these reactors hit terminal license extensions.
+                    Age profile of the operational reactors in this reference set. Older cohorts increase the importance of life-extension, replacement and demand scenarios; retirement timing remains uncertain.
                 </p>
             </div>
 
             <div style={{ width: '100%', height: 350 }}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                     <BarChart data={data} margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                         <XAxis
@@ -75,7 +81,7 @@ const RetirementCliffChart: React.FC = () => {
                             tickLine={false}
                             axisLine={{ stroke: 'var(--border)' }}
                         />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--bg-elevated)' }} />
+                        <Tooltip content={<RetirementTooltip />} cursor={{ fill: 'var(--bg-elevated)' }} />
                         <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                             {data.map((_, index) => (
                                 <Cell key={`cell-${index}`} fill={index >= 3 ? 'var(--orange)' : 'var(--accent)'} />

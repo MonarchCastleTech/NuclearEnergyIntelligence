@@ -1,25 +1,28 @@
 import React from 'react';
+import type { SelectedFacility } from './lib/facilities';
 
 interface DossierProps {
-    plant: any;
+    plant: SelectedFacility;
     onClose: () => void;
 }
 
 const DossierComponent: React.FC<DossierProps> = ({ plant, onClose }) => {
-    if (!plant) return null;
+    const isReactor = 'reactors' in plant;
 
     return (
         <>
             <div className="facility-detail-header">
                 <div>
                     <h3 className="facility-detail-name">{plant.name}</h3>
-                    <span className="facility-detail-meta">{plant.location} · {plant.capacityMw} MWe ({plant.gridShare} Grid Share)</span>
+                    <span className="facility-detail-meta">
+                        {isReactor ? `${plant.location} · ${plant.capacityMw} MWe (${plant.gridShare} Grid Share)` : `${plant.country} · ${plant.type}`}
+                    </span>
                 </div>
                 <button className="facility-detail-close" onClick={onClose} aria-label="Close">×</button>
             </div>
             <p className="facility-detail-desc">{plant.description}</p>
 
-            <div className="intelligence-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--sp-4)', marginTop: 'var(--sp-5)' }}>
+            {isReactor && <div className="intelligence-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--sp-4)', marginTop: 'var(--sp-5)' }}>
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: 'var(--sp-2)' }}>
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>CAPITAL COST</span>
                     <div style={{ fontSize: '1.2rem', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>${plant.capitalCostBillion}B</div>
@@ -61,11 +64,11 @@ const DossierComponent: React.FC<DossierProps> = ({ plant, onClose }) => {
                         </div>
                     </div>
                 )}
-            </div>
+            </div>}
 
             {/* Reactor specific simplified display */}
-            <div className="process-list" style={{ marginTop: 'var(--sp-4)' }}>
-                {plant.reactors.map((r: any, idx: number) => {
+            {isReactor && <div className="process-list" style={{ marginTop: 'var(--sp-4)' }}>
+                {plant.reactors.map((r, idx: number) => {
                     let badgeClass = 'badge--red';
                     if (r.status === 'Construction') badgeClass = 'badge--orange';
                     if (r.status === 'Shutdown') badgeClass = 'badge--yellow';
@@ -81,7 +84,7 @@ const DossierComponent: React.FC<DossierProps> = ({ plant, onClose }) => {
                         </div>
                     );
                 })}
-            </div>
+            </div>}
         </>
     );
 };

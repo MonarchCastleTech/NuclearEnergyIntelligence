@@ -10,6 +10,10 @@ const appCss = read("src/App.css");
 const indexCss = read("src/index.css");
 const indexHtml = read("index.html");
 const policyModal = read("src/PolicyModal.tsx");
+const capitalChart = read("src/components/CapitalScatterplot.tsx");
+const retirementChart = read("src/components/RetirementCliffChart.tsx");
+const freshness = JSON.parse(read("src/data/freshness.json"));
+const refreshScript = read("scripts/refresh-data.mjs");
 const workflowUrl = new URL("../.github/workflows/pages.yml", import.meta.url);
 const workflow = existsSync(workflowUrl) ? readFileSync(workflowUrl, "utf8") : "";
 
@@ -40,12 +44,13 @@ test("evidence register separates analytical classes and shows source links", ()
 });
 
 test("release freshness, method version, provenance, confidence, and limitations are visible", () => {
-  assert.match(app, /<time dateTime="2026-03-01T10:58:22\+03:00">/);
-  assert.match(app, /Research snapshot: 1 March 2026/);
+  assert.match(app, /Source check:/);
+  assert.match(app, /Annual data through/);
   assert.match(app, /Method version/);
-  assert.match(app, /NEI-M1\.0/);
+  assert.match(app, /NEI-M1\.1/);
   assert.match(app, /Release provenance/);
-  assert.match(app, /Point-in-time analyst-curated snapshot/);
+  assert.match(app, /Last source check/);
+  assert.match(app, /last known good values retained/);
   assert.match(app, /Confidence/);
   assert.match(app, /Moderate/);
   assert.match(app, /Uncertainty/);
@@ -97,16 +102,30 @@ test("shared design tokens and responsive evidence-heavy layouts are enforced", 
 test("standard Pages workflow validates and deploys the same Vite artifact", () => {
   assert.match(workflow, /node-version:\s*20/);
   assert.match(workflow, /npm ci/);
-  assert.match(workflow, /node --test tests\/\*\.test\.mjs/);
+  assert.match(workflow, /npm test/);
+  assert.match(workflow, /npm run lint/);
   assert.match(workflow, /npm run build/);
   assert.match(workflow, /path:\s*\.\/dist/);
   assert.match(workflow, /actions\/deploy-pages@v4/);
   assert.match(workflow, /pages:\s*write/);
   assert.match(workflow, /id-token:\s*write/);
+  assert.match(workflow, /schedule:/);
+  assert.match(workflow, /npm run refresh:data/);
+  assert.match(workflow, /git push/);
 });
 
 test("head metadata and analytical copy avoid prohibited certainty claims", () => {
   assert.match(indexHtml, /name="description"/);
-  assert.doesNotMatch(app, /\bguaranteed\b|\brisk-free\b|\bwill outperform\b/i);
+  const userCopy = app + capitalChart + retirementChart;
+  assert.doesNotMatch(userCopy, /\bguaranteed\b|\brisk-free\b|\bwill outperform\b|\bimpossible\b|infinite risk premium/i);
   assert.doesNotMatch(app, /\blive data\b|\breal-time\b/i);
+});
+
+test("keyless refresh records honest last-known-good freshness", () => {
+  assert.equal(freshness.sourceUrl, "https://ourworldindata.org/grapher/share-electricity-nuclear.csv");
+  assert.ok(["current", "retained"].includes(freshness.status));
+  assert.ok(Number.isInteger(freshness.dataThroughYear));
+  assert.match(refreshScript, /AbortSignal\.timeout/);
+  assert.match(refreshScript, /Retained last known good data/);
+  assert.doesNotMatch(refreshScript, /process\.env\.[A-Z_]*(KEY|TOKEN)/);
 });

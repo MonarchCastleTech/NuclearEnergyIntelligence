@@ -6,9 +6,11 @@ import { ExposureTable } from './components/ExposureTable';
 import { FeaturedReports } from './components/FeaturedReports';
 import reactorsData from './data/reactors.json';
 import exposureData from './data/exposure.json';
+import freshness from './data/freshness.json';
 import chokepointData from './data/chokepoints.json';
 import { featuredReports } from './content/featuredReports';
 import type { FeaturedReportFacts } from './lib/types';
+import type { SelectedFacility } from './lib/facilities';
 import 'leaflet/dist/leaflet.css';
 import './App.css';
 
@@ -17,8 +19,6 @@ import CapitalScatterplot from './components/CapitalScatterplot';
 import FuelCycleMatrix from './components/FuelCycleMatrix';
 import RetirementCliffChart from './components/RetirementCliffChart';
 import TurkiyeDossier from './components/TurkiyeDossier';
-
-type SelectedFacility = (typeof reactorsData)[number] | (typeof chokepointData)[number];
 
 const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -32,16 +32,28 @@ const App: React.FC = () => {
   const [timelineYear, setTimelineYear] = useState(2025);
   const [activeModal, setActiveModal] = useState<'methodology' | 'policy' | null>(null);
 
-  // Parse the facts for the featured reports component
+  const exposureByName = (name: string) => exposureData.find(row => row.countryName === name);
+  const france = exposureByName('France')!;
+  const slovenia = exposureByName('Slovenia')!;
+  const bulgaria = exposureByName('Bulgaria')!;
+  const slovakia = exposureByName('Slovakia')!;
+  const unitedStates = exposureByName('United States of America')!;
+  const china = exposureByName('China')!;
+  const korea = exposureByName('Korea, Republic of')!;
+  const highestExposure = exposureData[0];
+  const sourceCheckDate = new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  }).format(new Date(freshness.checkedAt));
+
   const facts: FeaturedReportFacts = {
     france: {
-      factText: "64.8% nuclear share | 56 active reactors | 61.4 GW active capacity"
+      factText: `${france.nuclearSharePct}% nuclear share | ${france.activeReactorCount} active reactors | ${(france.activeNetCapacityMw / 1000).toFixed(1)} GW active capacity`
     },
     concentration: {
-      factText: "Slovenia relies on a single reactor for 36.8%; Bulgaria gets 40.5% exposure with 2 reactors; Slovakia hits 61.3% with 5 reactors."
+      factText: `Slovenia: ${slovenia.nuclearSharePct}% from ${slovenia.activeReactorCount} reactor; Bulgaria: ${bulgaria.nuclearSharePct}% from ${bulgaria.activeReactorCount}; Slovakia: ${slovakia.nuclearSharePct}% from ${slovakia.activeReactorCount}.`
     },
     scale: {
-      factText: "United States: 95.8 GW at 18.5% | China: 53.2 GW at 4.9% | Korea: 25.8 GW at 31.5%"
+      factText: `United States: ${(unitedStates.activeNetCapacityMw / 1000).toFixed(1)} GW at ${unitedStates.nuclearSharePct}% | China: ${(china.activeNetCapacityMw / 1000).toFixed(1)} GW at ${china.nuclearSharePct}% | Korea: ${(korea.activeNetCapacityMw / 1000).toFixed(1)} GW at ${korea.nuclearSharePct}%`
     }
   };
 
@@ -114,8 +126,9 @@ const App: React.FC = () => {
 
           <div className="release-strip" aria-label="Research release status">
             <span className="release-status">Research release</span>
-            <time dateTime="2026-03-01T10:58:22+03:00">Research snapshot: 1 March 2026</time>
-            <span>Method version: NEI-M1.0</span>
+            <span>Source check: {sourceCheckDate}</span>
+            <span>Annual data through {freshness.dataThroughYear}</span>
+            <span>Method version: NEI-M1.1</span>
           </div>
 
           <div className="severity-legend" aria-label="Map status legend">
@@ -139,8 +152,8 @@ const App: React.FC = () => {
       <div className="stats-banner">
         <div className="stats-inner">
           <div className="stat-item">
-            <div className="stat-number">64.8%</div>
-            <div className="stat-label">Highest national exposure (France)</div>
+            <div className="stat-number">{highestExposure.nuclearSharePct}%</div>
+            <div className="stat-label">Highest national exposure ({highestExposure.countryName})</div>
           </div>
           <div className="stat-item">
             <div className="stat-number">95.8 <span style={{ fontSize: '0.5em', verticalAlign: 'middle' }}>GW</span></div>
@@ -164,7 +177,7 @@ const App: React.FC = () => {
             <p className="eyebrow">Evidence before assertion</p>
             <h2 id="evidence-title">Release method &amp; provenance</h2>
             <p className="section-header-sub">
-              Point-in-time analyst-curated snapshot. This interface is not continuously updated.
+              Country generation shares refresh weekly from a keyless public series. Detailed reactor records remain a curated reference set.
             </p>
           </div>
           <button className="method-button" onClick={() => setActiveModal('methodology')}>
@@ -214,15 +227,20 @@ const App: React.FC = () => {
         <div className="method-panel">
           <div>
             <h3>Method version</h3>
-            <p><strong>NEI-M1.0</strong> · descriptive comparison, analyst classification and scenario framing.</p>
+            <p><strong>NEI-M1.1</strong> · descriptive comparison, analyst classification and scenario framing.</p>
           </div>
           <div>
             <h3>Release provenance</h3>
-            <p>Dataset commit <code>1a37fcd</code> · collected as a research release on 1 March 2026.</p>
+            <p>Last source check {sourceCheckDate} · annual generation data through {freshness.dataThroughYear} · {freshness.status === 'current' ? 'source refresh succeeded' : 'last known good values retained'}.</p>
           </div>
           <div>
             <h3>Source register</h3>
             <ul>
+              <li>
+                <a href={freshness.sourceUrl} target="_blank" rel="noreferrer">
+                  Our World in Data — nuclear share of electricity
+                </a>
+              </li>
               <li>
                 <a href="https://pris.iaea.org/PRIS/home.aspx" target="_blank" rel="noreferrer">
                   International Atomic Energy Agency (IAEA) PRIS
@@ -233,7 +251,7 @@ const App: React.FC = () => {
                   OECD Nuclear Energy Agency
                 </a>
               </li>
-              <li>Repository snapshots in <code>src/data/</code>; values are unchanged in this release.</li>
+              <li>Reactor, capacity and project records in <code>src/data/</code> are analyst-curated and may lag operational changes.</li>
             </ul>
           </div>
           <div className="limitations">
@@ -303,13 +321,13 @@ const App: React.FC = () => {
       <section id="map-section" className="reveal-section">
         <div className="map-section-inner">
           <div className="section-header">
-            <span className="evidence-pill observed">Observed data · Snapshot dated 1 March 2026</span>
+            <span className="evidence-pill observed">Observed data · annual series through {freshness.dataThroughYear}</span>
             <h2>The Operational Fleet</h2>
             <div className="section-rule"></div>
           </div>
           <p className="section-subtitle" style={{ marginBottom: '2rem' }}>
-            These grandfathered gigawatt-scale facilities provide zero-carbon baseload power.
-            If they closed, the regulatory environment ensures they could never be replaced identically.
+            These gigawatt-scale facilities provide low-carbon baseload power.
+            Replacement feasibility varies by licensing, financing, supply-chain capacity and policy.
           </p>
 
           <div className="filter-bar">
@@ -454,8 +472,8 @@ const App: React.FC = () => {
             <p>Part of Monarch Castle Technologies.</p>
           </div>
           <p className="footer-freshness">
-            <span>Point-in-time research release</span>
-            <time dateTime="2026-03-01T10:58:22+03:00">Updated 1 March 2026</time>
+            <span>{freshness.status === 'current' ? 'Public source check succeeded' : 'Last known good data retained'}</span>
+            <time dateTime={freshness.checkedAt}>Checked {sourceCheckDate}</time>
           </p>
         </div>
       </footer>
@@ -468,14 +486,14 @@ const App: React.FC = () => {
           onClose={() => setActiveModal(null)}
           content={
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <p><strong>Method NEI-M1.0.</strong> The release combines descriptive observations from committed records with analyst assessments and explicitly labelled scenarios. It does not publish a probability-calibrated forecast.</p>
+              <p><strong>Method NEI-M1.1.</strong> The release combines descriptive observations from public and committed records with analyst assessments and explicitly labelled scenarios. It does not publish a probability-calibrated forecast.</p>
               <p>Our assessment framework categorically evaluates industrial processes based on historical permitting success rates, legal blockade velocity, and capital formation requirements in modern Western regulatory regimes.</p>
 
               <h4 style={{ color: 'var(--text)', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem', margin: 0 }}>The Tri-Color Severity Scale</h4>
               <ul style={{ paddingLeft: '1.2rem', gap: '1rem', display: 'flex', flexDirection: 'column', margin: 0 }}>
-                <li><strong style={{ color: 'var(--red)', fontFamily: 'var(--font-mono)' }}>IMPOSSIBLE:</strong> Processes with a 0% success rate in overcoming NEPA/NRC environmental impact litigation within the last 20 years. Capital markets assign an infinite risk premium to these greenfield projects.</li>
-                <li><strong style={{ color: 'var(--orange)', fontFamily: 'var(--font-mono)' }}>EXTREMELY DIFFICULT:</strong> Processes achievable only by entity-level government carveouts, multi-billion dollar cost overruns, and routine schedule delays exceeding 100%.</li>
-                <li><strong style={{ color: 'var(--yellow)', fontFamily: 'var(--font-mono)' }}>RESTRICTED:</strong> Processes practically confined to expanding footprint on pre-existing licensed nuclear sites ("brownfielding").</li>
+                <li><strong style={{ color: 'var(--red)', fontFamily: 'var(--font-mono)' }}>SEVERE CONSTRAINT:</strong> Recent comparable projects show substantial licensing, financing or execution barriers. Outcomes remain jurisdiction-specific.</li>
+                <li><strong style={{ color: 'var(--orange)', fontFamily: 'var(--font-mono)' }}>HIGH CONSTRAINT:</strong> Delivery commonly requires exceptional public support, material contingency and long schedules.</li>
+                <li><strong style={{ color: 'var(--yellow)', fontFamily: 'var(--font-mono)' }}>SITE-DEPENDENT:</strong> Existing licensed sites may offer advantages, subject to project-level review.</li>
               </ul>
               <p><strong>Limitations:</strong> classifications are sensitive to source coverage, policy change and analyst judgment. They are comparative signals, not deterministic outcomes or investment recommendations.</p>
               <p>By mapping the physical prerequisites of the fuel cycle against this legal-regulatory decay matrix, we assess possible long-term geopolitical leverage constraints.</p>
@@ -492,7 +510,7 @@ const App: React.FC = () => {
           content={
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <p><strong>SUBJECT:</strong> Strategic vulnerability stemming from the global consolidation of ultra-heavy forging presses.</p>
-              <p>The construction of a monolithic Reactor Pressure Vessel (RPV) for Gen-III+ designs requires steel ingots often exceeding 500 tons. The presses capable of forging these ingots (14,000+ ton hydraulic presses paired with extreme-scale melt shops) are virtually extinct in the Western hemisphere.</p>
+              <p>The construction of a monolithic Reactor Pressure Vessel (RPV) for some Gen-III+ designs can require very large steel ingots and specialized presses. Western capacity is concentrated, creating potential schedule and supplier exposure.</p>
 
               <div style={{
                 borderLeft: '2px solid var(--red)',
