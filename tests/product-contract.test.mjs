@@ -124,6 +124,11 @@ test("head metadata and analytical copy avoid prohibited certainty claims", () =
   assert.doesNotMatch(app, /\blive data\b|\breal-time\b/i);
 });
 
+test("responsive charts start with valid dimensions", () => {
+  assert.match(capitalChart, /initialDimension=\{\{ width: 800, height: 400 \}\}/);
+  assert.match(retirementChart, /initialDimension=\{\{ width: 800, height: 350 \}\}/);
+});
+
 test("keyless refresh records honest last-known-good freshness", () => {
   assert.equal(freshness.sourceUrl, "https://ourworldindata.org/grapher/share-electricity-nuclear.csv");
   assert.ok(["current", "retained"].includes(freshness.status));

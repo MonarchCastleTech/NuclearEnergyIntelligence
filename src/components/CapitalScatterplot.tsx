@@ -61,7 +61,7 @@ const CapitalScatterplot: React.FC = () => {
             </div>
 
             <div style={{ width: '100%', height: 400 }}>
-                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} initialDimension={{ width: 800, height: 400 }}>
                     <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                         <XAxis
