@@ -3,7 +3,7 @@
   <!-- CODEX: generate a clean product logo — a stylized reactor containment dome / atomic core rendered as a minimalist crest in deep navy (#0b1f3a) and a single warning-red accent, matching the Monarch Castle dark, monospace intelligence aesthetic. Transparent background, square. -->
 
   # Nuclear Energy Intelligence
-  ### Mapping global nuclear exposure, supply-chain chokepoints, and the coming retirement cliff
+  ### Source-traced nuclear electricity shares across 23 selected countries
 
   ![status](https://img.shields.io/badge/status-active-brightgreen)
   ![division](https://img.shields.io/badge/Energy%20Intelligence-0b1f3a)
@@ -16,16 +16,13 @@
   ![GitHub Pages](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-222?logo=github)
 </div>
 
-> **Executive summary** — The Nuclear Energy Intelligence Portal is an interactive geopolitical brief that maps the structural constraints governing the future of global zero-carbon baseload power. It serves energy strategists, policy analysts, and capital allocators by translating reactor fleets, fuel-cycle concentration, and heavy-manufacturing chokepoints into decision-grade visual intelligence — exposing where dependence, deficit, and demographic decay collide.
+> **Current public release** — The portal displays the latest available annual nuclear-electricity share for 23 selected countries from Our World in Data, with each observation year and the refresh method. Earlier facility, project, cost, retirement, and fuel-cycle modules are withheld pending dated primary-source evidence for each displayed record. This release is an observed-data comparison, not a forecast or complete reactor inventory.
 
-## ✨ Highlights
-- **Exposure ranking array** — ranks nations by absolute dependence on nuclear generation versus structural capacity, separating large grid-buffering fleets from single-site national single-points-of-failure.
-- **Supply-chain chokepoint map** — a dark, interactive geospatial view that toggles between operating reactors and the ultra-heavy forging nodes (Japan, China, Russia, France) that physically gate Gen-III+ construction.
-- **Capital destruction tracker** — a delay-versus-cost matrix visualizing the schedule and budget overruns endemic to Western greenfield reactor builds.
-- **The retirement cliff** — fleet age profiling that surfaces the medium-term baseload risk as the 1970s/1980s build cohorts approach their 60-year terminal limits.
-- **Fuel-cycle concentration matrix** — stage-by-stage breakdown of mining, conversion, and enrichment leadership, highlighting Russian dominance of the SWU bottleneck.
-- **Regional target dossiers** — focused deep dives, including the Akkuyu VVER build-out anchoring Türkiye's industrial energy future.
-- **Methodology in the open** — every assessment is framed by the Monarch Castle Tri-Color Severity Scale, exposed in an in-app methodology memo.
+## Current method
+
+The scheduled refresh reads the [Our World in Data nuclear-electricity CSV](https://ourworldindata.org/grapher/share-electricity-nuclear.csv), selects each country's latest annual observation, rounds the share to one decimal, and records that country's observation year. Publication requires at least 20 matched countries and a latest available year of 2023 or newer. A failed source check retains the last good snapshot and marks the check as retained. The public interface displays only these source-traced shares.
+
+The previous `src/data/exposure.json`, `reactors.json`, `chokepoints.json`, and `uranium_cycle.json` remain in Git history and the repository as **unverified research reference material**. Their manually entered counts, capacities, costs, delays, capacity-factor sequences, and market shares lack record-level primary-source citations and are excluded from the public bundle. Do not use them as current measurements.
 
 ## 🖼️ Preview
 <!-- CODEX: capture real screenshots of the running portal (npm run dev) and drop them into docs/ -->
@@ -39,9 +36,9 @@
 <!-- CODEX: side-by-side of the Capital Scatterplot (delay vs cost) and the Retirement Cliff bar chart -->
 
 ## 🧭 What it does
-The portal is a single-page analytical brief composed of linked intelligence modules. Each module reads a curated dataset and renders it through a purpose-built visualization rather than a generic chart.
+The portal is a source-traced nuclear electricity-share table. Search and percentage bars are presentation only; they do not create a new risk score. The earlier modules listed below are withheld until their individual records are sourced.
 
-- **Exposure Table** — country-level nuclear share, active reactor count, and net capacity, ranked to distinguish *dependence* from *scale*.
+- **Public table** — country-level nuclear share and observation year for 23 selected countries.
 - **Interactive Map** — a label-stripped dark Leaflet map plotting reactor sites and, on toggle, the ultra-heavy forging and fuel-cycle chokepoints that constrain new build.
 - **Capital Scatterplot** — plots project cost against schedule delay to make Western greenfield cost-overrun patterns legible at a glance.
 - **Fuel Cycle Matrix** — decomposes the front end of the fuel cycle (mining → conversion → enrichment) into per-stage market leadership.
@@ -50,7 +47,7 @@ The portal is a single-page analytical brief composed of linked intelligence mod
 - **Featured Reports & Policy Memo** — short narrative briefs and a methodology modal explaining the assessment framework.
 
 ## 🗂️ Data & provenance
-Per Monarch Castle doctrine — **evidence before assertion**. The portal is driven by versioned, analyst-curated reference datasets committed in-repo under `src/data/`, so every figure on screen is traceable to a specific record in source control:
+The current public dataset is `src/data/verified-shares.json`, derived from the OWID CSV by `scripts/refresh-data.mjs`. A row's source and observation year are available in the interface. The older files below are not public evidence: being committed to source control does not independently verify their contents.
 
 | Dataset | Records | Key fields |
 |---|---|---|
@@ -61,7 +58,7 @@ Per Monarch Castle doctrine — **evidence before assertion**. The portal is dri
 
 **Assessment methodology.** Industrial processes are scored against a three-level constraint scale — `SEVERE CONSTRAINT` / `HIGH CONSTRAINT` / `SITE-DEPENDENT` — informed by permitting, financing and delivery evidence. These are comparative assessments, not deterministic outcomes. The framework is documented in the in-app *Intelligence Methodology* memo.
 
-> **Provenance.** Nuclear generation shares refresh weekly from the keyless Our World in Data series. Detailed reactor, capacity, project and chokepoint records remain analyst-curated reference sets; source age is disclosed in the interface.
+> **Provenance.** Nuclear generation shares refresh weekly from the keyless Our World in Data series. Detailed reactor, capacity, project and chokepoint records are withheld from the public release pending record-level source verification.
 
 ## 🛠️ Tech stack
 - **UI:** React 19 + TypeScript 5.9 (strict)
@@ -110,7 +107,7 @@ See `LICENSE`. © 2026 Monarch Castle Holdings · Ankara, Türkiye.
 
 ![Monarch Castle Technologies approved lockup](docs/brand/organization-lockup.png)
 
-Interactive geopolitical intelligence brief mapping global nuclear exposure, supply-chain chokepoints, fuel-cycle concentration, and the coming reactor retirement cliff.
+Source-traced annual nuclear-electricity shares for selected countries; facility and supply-chain analysis is withheld pending record-level verification.
 
 ![Lifecycle: Active](docs/lifecycle-active.svg)
 

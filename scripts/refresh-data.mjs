@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const SOURCE_URL = "https://ourworldindata.org/grapher/share-electricity-nuclear.csv";
-const exposureUrl = new URL("../src/data/exposure.json", import.meta.url);
+const sharesUrl = new URL("../src/data/verified-shares.json", import.meta.url);
 const freshnessUrl = new URL("../src/data/freshness.json", import.meta.url);
 
 const aliases = new Map([
@@ -44,7 +44,7 @@ async function writeFreshness(previous, status, detail, dataThroughYear = previo
   await writeFile(freshnessUrl, `${JSON.stringify(next, null, 2)}\n`);
 }
 
-const exposure = JSON.parse(await readFile(exposureUrl, "utf8"));
+const exposure = JSON.parse(await readFile(sharesUrl, "utf8"));
 let previous = { dataThroughYear: null };
 try {
   previous = JSON.parse(await readFile(freshnessUrl, "utf8"));
@@ -78,14 +78,14 @@ try {
     if (!latest) return row;
     matches += 1;
     dataThroughYear = Math.max(dataThroughYear, latest.year);
-    return { ...row, nuclearSharePct: Number(latest.value.toFixed(1)) };
+    return { ...row, nuclearSharePct: Number(latest.value.toFixed(1)), observationYear: latest.year };
   }).sort((a, b) => b.nuclearSharePct - a.nuclearSharePct);
 
   if (matches < 20 || dataThroughYear < 2023) {
     throw new Error(`source validation failed (${matches} matches; latest year ${dataThroughYear})`);
   }
 
-  await writeFile(exposureUrl, `${JSON.stringify(refreshed, null, 4)}\n`);
+  await writeFile(sharesUrl, `${JSON.stringify(refreshed, null, 2)}\n`);
   await writeFreshness(previous, "current", `Updated ${matches} country shares from the latest available annual series.`, dataThroughYear);
   console.log(`Updated ${matches} country shares; data through ${dataThroughYear}.`);
 } catch (error) {

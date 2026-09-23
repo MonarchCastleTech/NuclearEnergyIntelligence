@@ -1,0 +1,140 @@
+[
+  {
+    "countryCode": "FR",
+    "countryName": "France",
+    "nuclearSharePct": 68.8,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "SK",
+    "countryName": "Slovakia",
+    "nuclearSharePct": 66.4,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "CZ",
+    "countryName": "Czechia",
+    "nuclearSharePct": 42.3,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "HU",
+    "countryName": "Hungary",
+    "nuclearSharePct": 40,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "FI",
+    "countryName": "Finland",
+    "nuclearSharePct": 39.9,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "SI",
+    "countryName": "Slovenia",
+    "nuclearSharePct": 39.3,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "BG",
+    "countryName": "Bulgaria",
+    "nuclearSharePct": 39.1,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "BY",
+    "countryName": "Belarus",
+    "nuclearSharePct": 36.6,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "BE",
+    "countryName": "Belgium",
+    "nuclearSharePct": 33.1,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "CH",
+    "countryName": "Switzerland",
+    "nuclearSharePct": 29.9,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "KR",
+    "countryName": "Korea, Republic of",
+    "nuclearSharePct": 29.6,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "SE",
+    "countryName": "Sweden",
+    "nuclearSharePct": 27.6,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "AM",
+    "countryName": "Armenia",
+    "nuclearSharePct": 27,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "AE",
+    "countryName": "United Arab Emirates",
+    "nuclearSharePct": 22.9,
+    "observationYear": 2024
+  },
+  {
+    "countryCode": "RO",
+    "countryName": "Romania",
+    "nuclearSharePct": 20.5,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "ES",
+    "countryName": "Spain",
+    "nuclearSharePct": 18.8,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "RU",
+    "countryName": "Russian Federation",
+    "nuclearSharePct": 18.3,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "US",
+    "countryName": "United States of America",
+    "nuclearSharePct": 17.4,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "CA",
+    "countryName": "Canada",
+    "nuclearSharePct": 13.1,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "UK",
+    "countryName": "United Kingdom",
+    "nuclearSharePct": 12.4,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "PK",
+    "countryName": "Pakistan",
+    "nuclearSharePct": 12.2,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "JP",
+    "countryName": "Japan",
+    "nuclearSharePct": 9.1,
+    "observationYear": 2025
+  },
+  {
+    "countryCode": "CN",
+    "countryName": "China",
+    "nuclearSharePct": 4.6,
+    "observationYear": 2025
+  }
+]

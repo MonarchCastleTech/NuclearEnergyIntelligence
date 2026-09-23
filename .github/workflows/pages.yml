@@ -41,7 +41,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/exposure.json src/data/freshness.json
+          git add src/data/verified-shares.json src/data/freshness.json
           if ! git diff --cached --quiet; then
             git commit -m "data: refresh nuclear generation shares"
             git push

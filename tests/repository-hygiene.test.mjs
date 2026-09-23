@@ -17,7 +17,7 @@ const licenseDecision = "new-mit";
 
 test("MonarchCastleTech/NuclearEnergyIntelligence exposes the complete repository documentation contract", () => {
   assert.ok(match, "README must include the managed repository-hygiene block");
-  assert.ok(contract.includes("Interactive geopolitical intelligence brief mapping global nuclear exposure, supply-chain chokepoints, fuel-cycle concentration, and the coming reactor retirement cliff."), "README purpose must match the canonical registry");
+  assert.ok(contract.includes("Source-traced annual nuclear-electricity shares for selected countries; facility and supply-chain analysis is withheld pending record-level verification."), "README purpose must match the public release");
   assert.match(contract, /lifecycle-active/);
   assert.ok(contract.includes("https://monarchcastletech.github.io/NuclearEnergyIntelligence/"));
   for (const heading of expectedHeadings) assert.ok(contract.includes(`## ${heading}`), `missing heading: ${heading}`);

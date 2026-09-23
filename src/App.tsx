@@ -1,533 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import MapComponent from './MapComponent';
-import DossierComponent from './DossierComponent';
-import PolicyModal from './PolicyModal';
-import { ExposureTable } from './components/ExposureTable';
-import { FeaturedReports } from './components/FeaturedReports';
-import reactorsData from './data/reactors.json';
-import exposureData from './data/exposure.json';
+import { useMemo, useState } from 'react';
+import shares from './data/verified-shares.json';
 import freshness from './data/freshness.json';
-import chokepointData from './data/chokepoints.json';
-import { featuredReports } from './content/featuredReports';
-import type { FeaturedReportFacts } from './lib/types';
-import type { SelectedFacility } from './lib/facilities';
-import 'leaflet/dist/leaflet.css';
 import './App.css';
 
-// Phase II Imports
-import CapitalScatterplot from './components/CapitalScatterplot';
-import FuelCycleMatrix from './components/FuelCycleMatrix';
-import RetirementCliffChart from './components/RetirementCliffChart';
-import TurkiyeDossier from './components/TurkiyeDossier';
+type ShareRow = {
+  countryCode: string;
+  countryName: string;
+  nuclearSharePct: number;
+  observationYear?: number;
+};
 
-const App: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [selectedPlant, setSelectedPlant] = useState<SelectedFacility | null>(null);
-  const [filters, setFilters] = useState({
-    operational: true,
-    construction: true,
-    shutdown: true,
-  });
-  const [showChokepoints, setShowChokepoints] = useState(false);
-  const [timelineYear, setTimelineYear] = useState(2025);
-  const [activeModal, setActiveModal] = useState<'methodology' | 'policy' | null>(null);
+const rows = shares as ShareRow[];
+const percentage = new Intl.NumberFormat('en', { maximumFractionDigits: 1 });
+const sourceCheck = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+}).format(new Date(freshness.checkedAt));
 
-  const exposureByName = (name: string) => exposureData.find(row => row.countryName === name);
-  const france = exposureByName('France')!;
-  const slovenia = exposureByName('Slovenia')!;
-  const bulgaria = exposureByName('Bulgaria')!;
-  const slovakia = exposureByName('Slovakia')!;
-  const unitedStates = exposureByName('United States of America')!;
-  const china = exposureByName('China')!;
-  const korea = exposureByName('Korea, Republic of')!;
-  const highestExposure = exposureData[0];
-  const sourceCheckDate = new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
-  }).format(new Date(freshness.checkedAt));
-
-  const facts: FeaturedReportFacts = {
-    france: {
-      factText: `${france.nuclearSharePct}% nuclear share | ${france.activeReactorCount} active reactors | ${(france.activeNetCapacityMw / 1000).toFixed(1)} GW active capacity`
-    },
-    concentration: {
-      factText: `Slovenia: ${slovenia.nuclearSharePct}% from ${slovenia.activeReactorCount} reactor; Bulgaria: ${bulgaria.nuclearSharePct}% from ${bulgaria.activeReactorCount}; Slovakia: ${slovakia.nuclearSharePct}% from ${slovakia.activeReactorCount}.`
-    },
-    scale: {
-      factText: `United States: ${(unitedStates.activeNetCapacityMw / 1000).toFixed(1)} GW at ${unitedStates.nuclearSharePct}% | China: ${(china.activeNetCapacityMw / 1000).toFixed(1)} GW at ${china.nuclearSharePct}% | Korea: ${(korea.activeNetCapacityMw / 1000).toFixed(1)} GW at ${korea.nuclearSharePct}%`
-    }
-  };
-
-  // Handle sticky nav scroll effect
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const toggleFilter = (type: keyof typeof filters) => {
-    setFilters(prev => ({ ...prev, [type]: !prev[type] }));
-    if (selectedPlant && selectedPlant.status.toLowerCase() === type && filters[type]) {
-      setSelectedPlant(null);
-    }
-  };
-
-  const handleFacilityKeyDown = (
-    event: React.KeyboardEvent<HTMLButtonElement>,
-    facility: SelectedFacility,
-  ) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      setSelectedPlant(facility);
-    }
-  };
+export default function App() {
+  const [query, setQuery] = useState('');
+  const filteredRows = useMemo(
+    () => rows.filter((row) => row.countryName.toLowerCase().includes(query.trim().toLowerCase())),
+    [query],
+  );
 
   return (
     <>
-      <a className="skip-link" href="#main-content">Skip to intelligence brief</a>
-
-      {/* ===== STICKY NAV ===== */}
-      <nav className={`site-nav ${scrolled ? 'scrolled' : ''}`} aria-label="Primary navigation">
+      <a className="skip-link" href="#main-content">Skip to data</a>
+      <nav className="site-nav scrolled" aria-label="Primary navigation">
         <div className="nav-inner">
-          <a href="#hero" className="nav-brand" aria-label="Nuclear Energy Intelligence home">
+          <a href="#top" className="nav-brand" aria-label="Nuclear Energy Intelligence home">
             <img className="product-mark" src="/NuclearEnergyIntelligence/logo.png" alt="Nuclear Energy Intelligence" />
             <div className="brand-copy">
               <span className="brand-title">Nuclear Energy Intelligence</span>
               <span className="brand-endorsement">Part of Monarch Castle Technologies.</span>
             </div>
-            <span className="brand-divider" aria-hidden="true"></span>
+            <span className="brand-divider" aria-hidden="true" />
             <img className="masterbrand-mark" src="/NuclearEnergyIntelligence/mct-logo.png" alt="Monarch Castle Technologies" />
           </a>
           <div className="nav-links">
-            <a href="#reports-section" className="active">Reports</a>
-            <a href="#table-section">Exposure Table</a>
-            <a href="#map-section">The Fleet</a>
-            <button onClick={() => setActiveModal('methodology')}>Methodology</button>
-            <button className="policy-link" onClick={() => setActiveModal('policy')}>Policy memo</button>
+            <a href="#data">Data</a>
+            <a href="#methodology">Method</a>
+            <a href="https://monarchcastle.com/products/">Products</a>
           </div>
         </div>
       </nav>
 
-      <main id="main-content">
-      {/* ===== HERO ===== */}
-      <section className="hero" id="hero" aria-labelledby="page-title">
-        <div className="hero-grid-bg" aria-hidden="true"></div>
-        <div className="hero-content">
-          <p className="eyebrow">Independent energy systems research</p>
-          <h1 className="hero-title" id="page-title">
-            Nuclear<br /><span className="hero-title-accent text-red">Energy Intelligence</span>
-          </h1>
-          <p className="hero-subtitle">
-            An intelligence brief detailing national dependence on nuclear generation,
-            scale vs. exposure dynamics, and the operational fleet that powers the globe.
-          </p>
-          <p className="hero-tagline">
-            "A nation that cannot forge its own pressure vessels cannot dictate its own nuclear sovereignty."
-          </p>
+      <main id="main-content" className="verification-page">
+        <header id="top" className="verification-hero">
+          <p className="verification-eyebrow">SOURCE-TRACED SERIES / NUCLEAR ELECTRICITY</p>
+          <h1>Where nuclear power shapes the grid.</h1>
+          <p className="verification-lead">The share of electricity generated from nuclear power across 23 selected countries, using the latest available annual observation for each country.</p>
+          <div className="verification-meta">
+            <span><strong>23</strong> selected countries</span>
+            <span><strong>{freshness.dataThroughYear}</strong> latest year in this selection</span>
+            <span><strong>{freshness.status === 'current' ? 'CURRENT' : 'RETAINED'}</strong> source check</span>
+          </div>
+        </header>
 
-          <div className="release-strip" aria-label="Research release status">
-            <span className="release-status">Research release</span>
-            <span>Source check: {sourceCheckDate}</span>
-            <span>Annual data through {freshness.dataThroughYear}</span>
-            <span>Method version: NEI-M1.1</span>
-          </div>
-
-          <div className="severity-legend" aria-label="Map status legend">
-            <div className="severity-item">
-              <div className="severity-dot severity-dot--red" aria-hidden="true"></div>
-              <span>Operational / Dominant</span>
-            </div>
-            <div className="severity-item">
-              <div className="severity-dot severity-dot--orange" aria-hidden="true"></div>
-              <span>Under Construction</span>
-            </div>
-            <div className="severity-item">
-              <div className="severity-dot severity-dot--yellow" aria-hidden="true"></div>
-              <span>Restricted / Offline</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== STATS BANNER ===== */}
-      <div className="stats-banner">
-        <div className="stats-inner">
-          <div className="stat-item">
-            <div className="stat-number">{highestExposure.nuclearSharePct}%</div>
-            <div className="stat-label">Highest national exposure ({highestExposure.countryName})</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">95.8 <span style={{ fontSize: '0.5em', verticalAlign: 'middle' }}>GW</span></div>
-            <div className="stat-label">Largest scale operating capacity (USA)</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">30%</div>
-            <div className="stat-label">Nations over 30% generating share</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">12+</div>
-            <div className="stat-label">Years of regulatory delay for standard Western approvals</div>
-          </div>
-        </div>
-      </div>
-
-      {/* ===== RELEASE EVIDENCE ===== */}
-      <section id="evidence-register" className="product-section evidence-register" aria-labelledby="evidence-title">
-        <div className="section-header evidence-heading">
+        <section className="verification-notice" aria-labelledby="hold-title">
           <div>
-            <p className="eyebrow">Evidence before assertion</p>
-            <h2 id="evidence-title">Release method &amp; provenance</h2>
-            <p className="section-header-sub">
-              Country generation shares refresh weekly from a keyless public series. Detailed reactor records remain a curated reference set.
-            </p>
+            <p className="verification-eyebrow">PUBLICATION BOUNDARY</p>
+            <h2 id="hold-title">Facility and project analysis is under source review.</h2>
           </div>
-          <button className="method-button" onClick={() => setActiveModal('methodology')}>
-            Read full methodology
-          </button>
-        </div>
+          <p>Reactor counts, plant capacities, construction costs, delays, capacity-factor histories, forging-site claims, and fuel-cycle market shares are withheld from this public view until each record has a dated primary source. The country electricity-share series below remains available.</p>
+        </section>
 
-        <div className="evidence-grid">
-          <article className="evidence-card" data-evidence-class="observed-data">
-            <span className="evidence-kind">Observed data</span>
-            <h3>Reported fleet &amp; generation</h3>
-            <p>Country shares, reactor status, net capacity and project records reproduced from the committed research snapshot.</p>
-            <dl>
-              <div><dt>Confidence</dt><dd>Moderate</dd></div>
-              <div><dt>Uncertainty</dt><dd>Source dates and later status changes</dd></div>
-            </dl>
-          </article>
-          <article className="evidence-card" data-evidence-class="assessment">
-            <span className="evidence-kind">Assessment</span>
-            <h3>Industrial constraint scoring</h3>
-            <p>Analyst interpretation of permitting, capital formation and heavy-manufacturing constraints.</p>
-            <dl>
-              <div><dt>Confidence</dt><dd>Moderate</dd></div>
-              <div><dt>Uncertainty</dt><dd>Jurisdiction and policy can change</dd></div>
-            </dl>
-          </article>
-          <article className="evidence-card" data-evidence-class="scenario">
-            <span className="evidence-kind">Scenario</span>
-            <h3>Age &amp; retirement stress</h3>
-            <p>Exploratory pathways based on fleet age and selected retirement assumptions; not a scheduled outcome.</p>
-            <dl>
-              <div><dt>Confidence</dt><dd>Low–moderate</dd></div>
-              <div><dt>Uncertainty</dt><dd>Life extensions and policy intervention</dd></div>
-            </dl>
-          </article>
-          <article className="evidence-card" data-evidence-class="forecast">
-            <span className="evidence-kind">Forecast</span>
-            <h3>No point forecast published</h3>
-            <p>Forward-looking statements are directional assessments only and are not probability-calibrated predictions.</p>
-            <dl>
-              <div><dt>Confidence</dt><dd>Not scored</dd></div>
-              <div><dt>Uncertainty</dt><dd>Material and irreducible</dd></div>
-            </dl>
-          </article>
-        </div>
+        <section id="data" className="verification-data" aria-labelledby="data-title">
+          <div className="verification-section-heading">
+            <div>
+              <p className="verification-eyebrow">OBSERVED DATA</p>
+              <h2 id="data-title">Nuclear share of electricity</h2>
+              <p>Percent of national electricity generation, rounded to one decimal. Observation years can differ by country.</p>
+            </div>
+            <label className="verification-search">
+              Search countries
+              <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Country name" />
+            </label>
+          </div>
+          <div className="verification-table-wrap">
+            <table className="verification-table">
+              <thead><tr><th scope="col">Country</th><th scope="col">Nuclear share</th><th scope="col">Observation year</th></tr></thead>
+              <tbody>
+                {filteredRows.map((row) => (
+                  <tr key={row.countryCode}>
+                    <th scope="row"><span className="verification-code">{row.countryCode}</span>{row.countryName}</th>
+                    <td><div className="verification-share"><span>{percentage.format(row.nuclearSharePct)}%</span><span className="verification-track" aria-hidden="true"><span style={{ width: `${Math.max(0, Math.min(100, row.nuclearSharePct))}%` }} /></span></div></td>
+                    <td>{row.observationYear ?? 'Year unavailable'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {filteredRows.length === 0 && <p className="verification-empty">No country in this selected set matches your search.</p>}
+          </div>
+        </section>
 
-        <div className="method-panel">
+        <section id="methodology" className="verification-method" aria-labelledby="method-title">
           <div>
-            <h3>Method version</h3>
-            <p><strong>NEI-M1.1</strong> · descriptive comparison, analyst classification and scenario framing.</p>
+            <p className="verification-eyebrow">METHOD / PROVENANCE</p>
+            <h2 id="method-title">One measure, one source trail.</h2>
           </div>
           <div>
-            <h3>Release provenance</h3>
-            <p>Last source check {sourceCheckDate} · annual generation data through {freshness.dataThroughYear} · {freshness.status === 'current' ? 'source refresh succeeded' : 'last known good values retained'}.</p>
+            <p>The scheduled refresh reads the public Our World in Data CSV, selects the latest annual nuclear-electricity share for each named country, rounds it to one decimal place, and records its observation year. It requires at least 20 country matches and a latest source year of at least 2023 before replacing the last good snapshot.</p>
+            <p>Last source check: <time dateTime={freshness.checkedAt}>{sourceCheck}</time>. {freshness.status === 'current' ? 'The source refresh succeeded.' : 'The last known good values were retained because the latest source check failed.'} This is a selected-country comparison, not a complete global reactor inventory or a forecast.</p>
+            <a className="verification-source" href={freshness.sourceUrl} target="_blank" rel="noreferrer">Open the source CSV ↗</a>
+            <a className="verification-source" href="https://github.com/MonarchCastleTech/NuclearEnergyIntelligence/blob/main/scripts/refresh-data.mjs" target="_blank" rel="noreferrer">Read the refresh method ↗</a>
           </div>
-          <div>
-            <h3>Source register</h3>
-            <ul>
-              <li>
-                <a href={freshness.sourceUrl} target="_blank" rel="noreferrer">
-                  Our World in Data — nuclear share of electricity
-                </a>
-              </li>
-              <li>
-                <a href="https://pris.iaea.org/PRIS/home.aspx" target="_blank" rel="noreferrer">
-                  International Atomic Energy Agency (IAEA) PRIS
-                </a>
-              </li>
-              <li>
-                <a href="https://www.oecd-nea.org/jcms/pl_14934/nuclear-energy-data" target="_blank" rel="noreferrer">
-                  OECD Nuclear Energy Agency
-                </a>
-              </li>
-              <li>Reactor, capacity and project records in <code>src/data/</code> are analyst-curated and may lag operational changes.</li>
-            </ul>
-          </div>
-          <div className="limitations">
-            <h3>Forecast limitations</h3>
-            <p>Scenarios do not model every outage, life extension, licensing decision, commodity shock or technology change. Do not treat them as investment advice or expected outcomes.</p>
-          </div>
-          <div>
-            <h3>Performance context</h3>
-            <p>Historical capacity, cost and delay observations describe selected records; they do not establish future project performance.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== FEATURED REPORTS SECTION ===== */}
-      <section id="reports-section" className="product-section reveal-section visible">
-        <div className="section-header">
-          <span className="evidence-pill assessment">Assessment · Moderate confidence</span>
-          <h2>Featured Reports</h2>
-          <p className="section-header-sub">The three stories that explain the current exposure map</p>
-          <div className="section-rule"></div>
-        </div>
-        <FeaturedReports reports={featuredReports} facts={facts} />
-      </section>
-
-      {/* ===== EXPOSURE TABLE SECTION ===== */}
-      <section id="table-section" className="product-section reveal-section visible">
-        <div className="section-header">
-          <span className="evidence-pill observed">Observed data · Moderate confidence</span>
-          <h2>Nuclear Exposure Table</h2>
-          <p className="section-header-sub">Countries ranked from highest to lowest dependence on nuclear generation</p>
-          <div className="section-rule"></div>
-        </div>
-
-        <div className="section-layout">
-          <div className="section-text" style={{ gridColumn: '1 / -1' }}>
-            <p className="section-subtitle">
-              Scale and generating share are distinct metrics. A country may have a massive operating fleet but minimal exposure, while another relies entirely on a single site.
-            </p>
-            <ExposureTable rows={exposureData} />
-          </div>
-        </div>
-      </section>
-
-      {/* ===== REGIONAL INTELLIGENCE ===== */}
-      <section id="regional-section" className="product-section reveal-section visible">
-        <span className="evidence-pill assessment">Assessment · Moderate confidence</span>
-        <TurkiyeDossier />
-      </section>
-
-      {/* ===== FINANCIAL & COMMODITY INTELLIGENCE ===== */}
-      <section id="financial-section" className="product-section reveal-section visible">
-        <div className="section-header">
-          <span className="evidence-pill scenario">Observed data + assessment + scenario</span>
-          <h2>Geopolitical Indicators</h2>
-          <p className="section-header-sub">Tracking the supply chain, capital destruction, and future deficits.</p>
-          <div className="section-rule"></div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-8)' }}>
-          <FuelCycleMatrix />
-          <CapitalScatterplot />
-          <RetirementCliffChart />
-        </div>
-      </section>
-
-      {/* ===== MAP SECTION ===== */}
-      <section id="map-section" className="reveal-section">
-        <div className="map-section-inner">
-          <div className="section-header">
-            <span className="evidence-pill observed">Observed data · annual series through {freshness.dataThroughYear}</span>
-            <h2>The Operational Fleet</h2>
-            <div className="section-rule"></div>
-          </div>
-          <p className="section-subtitle" style={{ marginBottom: '2rem' }}>
-            These gigawatt-scale facilities provide low-carbon baseload power.
-            Replacement feasibility varies by licensing, financing, supply-chain capacity and policy.
-          </p>
-
-          <div className="filter-bar">
-            {/* Same filter buttons with matching Reference classes */}
-            <button
-              className={`filter-btn ${!showChokepoints && filters.operational ? 'active' : ''}`}
-              onClick={() => { setShowChokepoints(false); toggleFilter('operational'); }}
-              aria-pressed={!showChokepoints && filters.operational}
-            >
-              Operational
-            </button>
-            <button
-              className={`filter-btn ${!showChokepoints && filters.construction ? 'active' : ''}`}
-              onClick={() => { setShowChokepoints(false); toggleFilter('construction'); }}
-              aria-pressed={!showChokepoints && filters.construction}
-            >
-              Construction
-            </button>
-            <button
-              className={`filter-btn ${!showChokepoints && filters.shutdown ? 'active' : ''}`}
-              onClick={() => { setShowChokepoints(false); toggleFilter('shutdown'); }}
-              aria-pressed={!showChokepoints && filters.shutdown}
-            >
-              Shutdown
-            </button>
-
-            <div style={{ width: '1px', background: 'var(--border)', margin: '0 var(--sp-2)' }}></div>
-
-            <button
-              className={`filter-btn ${showChokepoints ? 'active' : ''}`}
-              onClick={() => setShowChokepoints(true)}
-              aria-pressed={showChokepoints}
-              style={{ color: showChokepoints ? 'var(--red)' : '' }}
-            >
-              Heavy Manufacturing (Chokepoints)
-            </button>
-          </div>
-
-          <div className="timeline-container" style={{ marginBottom: 'var(--sp-6)', padding: 'var(--sp-4)', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--sp-3)' }}>
-              <div>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', margin: 0, color: 'var(--text)' }}>Industrial Decay Timeline</h3>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Filtering active facilities by build constraints.</span>
-              </div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2rem', fontWeight: 700, color: 'var(--red)', lineHeight: 1 }}>{timelineYear}</div>
-            </div>
-            <input
-              type="range"
-              min="1970"
-              max="2030"
-              value={timelineYear}
-              onChange={(e) => setTimelineYear(parseInt(e.target.value))}
-              aria-label="Industrial decay timeline year"
-              style={{ width: '100%', cursor: 'pointer', accentColor: 'var(--red)' }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--sp-2)', fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              <span>1970</span>
-              <span>1990 (WESTERN PEAK)</span>
-              <span>2010 (STAGNATION)</span>
-              <span>2030</span>
-            </div>
-          </div>
-
-          <div className="map-wrapper">
-            <MapComponent
-              onSelectPlant={setSelectedPlant}
-              filterTypes={filters}
-              timelineYear={timelineYear}
-              showChokepoints={showChokepoints}
-            />
-            {/* Facility list matching the reference's layout for the map sidebar */}
-            <div className="facility-list" id="facility-list">
-              {!showChokepoints ? reactorsData.filter(r => {
-                if (r.buildYear > timelineYear) return false;
-                const statusLower = r.status.toLowerCase();
-                if (statusLower === 'operational' && !filters.operational) return false;
-                if (statusLower === 'construction' && !filters.construction) return false;
-                if (statusLower === 'shutdown' && !filters.shutdown) return false;
-                return true;
-              }).map(plant => (
-                <button
-                  type="button"
-                  key={plant.id}
-                  className={`facility-card ${selectedPlant?.id === plant.id ? 'active' : ''}`}
-                  onClick={() => setSelectedPlant(plant)}
-                  tabIndex={0}
-                  aria-pressed={selectedPlant?.id === plant.id}
-                  onKeyDown={(event) => handleFacilityKeyDown(event, plant)}
-                >
-                  <h4>{plant.name}</h4>
-                  <span className="facility-city">{plant.location.split(',')[0]} · Est. {plant.established}</span><br />
-                  <span className="facility-type" style={{
-                    color: plant.status === 'Operational' ? 'var(--red)' : plant.status === 'Construction' ? 'var(--orange)' : 'var(--yellow)',
-                    background: plant.status === 'Operational' ? 'var(--red-bg)' : plant.status === 'Construction' ? 'var(--orange-bg)' : 'var(--yellow-bg)'
-                  }}>
-                    {plant.status}
-                  </span>
-                </button>
-              )) : chokepointData.map(forge => (
-                <button
-                  type="button"
-                  key={forge.id}
-                  className="facility-card"
-                  onClick={() => setSelectedPlant(forge)} // Reusing the dossier component for forges
-                  tabIndex={0}
-                  aria-pressed={selectedPlant?.id === forge.id}
-                  onKeyDown={(event) => handleFacilityKeyDown(event, forge)}
-                >
-                  <h4>{forge.name}</h4>
-                  <span className="facility-city">{forge.country}</span><br />
-                  <span className="facility-type" style={{
-                    color: 'var(--accent)',
-                    background: 'var(--accent-dim)'
-                  }}>
-                    {forge.type}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {selectedPlant && (
-            <div className={`facility-detail visible`} style={{
-              borderLeftColor: selectedPlant.status === 'Operational' ? 'var(--red)' : selectedPlant.status === 'Construction' ? 'var(--orange)' : 'var(--yellow)'
-            }}>
-              <DossierComponent
-                plant={selectedPlant}
-                onClose={() => setSelectedPlant(null)}
-              />
-            </div>
-          )}
-        </div>
-      </section>
+        </section>
       </main>
-
-      {/* ===== FOOTER ===== */}
-      <footer className="site-footer">
-        <div className="footer-rule"></div>
-        <div className="footer-inner">
-          <div>
-            <p className="footer-attribution">Nuclear Energy Intelligence</p>
-            <p>Part of Monarch Castle Technologies.</p>
-          </div>
-          <p className="footer-freshness">
-            <span>{freshness.status === 'current' ? 'Public source check succeeded' : 'Last known good data retained'}</span>
-            <time dateTime={freshness.checkedAt}>Checked {sourceCheckDate}</time>
-          </p>
-        </div>
-      </footer>
-
-      {/* ===== MODALS ===== */}
-      {activeModal === 'methodology' && (
-        <PolicyModal
-          title="Intelligence Methodology"
-          subtitle="MONARCH CASTLE TECHNOLOGIES ASSESSMENT FRAMEWORK"
-          onClose={() => setActiveModal(null)}
-          content={
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <p><strong>Method NEI-M1.1.</strong> The release combines descriptive observations from public and committed records with analyst assessments and explicitly labelled scenarios. It does not publish a probability-calibrated forecast.</p>
-              <p>Our assessment framework categorically evaluates industrial processes based on historical permitting success rates, legal blockade velocity, and capital formation requirements in modern Western regulatory regimes.</p>
-
-              <h4 style={{ color: 'var(--text)', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem', margin: 0 }}>The Tri-Color Severity Scale</h4>
-              <ul style={{ paddingLeft: '1.2rem', gap: '1rem', display: 'flex', flexDirection: 'column', margin: 0 }}>
-                <li><strong style={{ color: 'var(--red)', fontFamily: 'var(--font-mono)' }}>SEVERE CONSTRAINT:</strong> Recent comparable projects show substantial licensing, financing or execution barriers. Outcomes remain jurisdiction-specific.</li>
-                <li><strong style={{ color: 'var(--orange)', fontFamily: 'var(--font-mono)' }}>HIGH CONSTRAINT:</strong> Delivery commonly requires exceptional public support, material contingency and long schedules.</li>
-                <li><strong style={{ color: 'var(--yellow)', fontFamily: 'var(--font-mono)' }}>SITE-DEPENDENT:</strong> Existing licensed sites may offer advantages, subject to project-level review.</li>
-              </ul>
-              <p><strong>Limitations:</strong> classifications are sensitive to source coverage, policy change and analyst judgment. They are comparative signals, not deterministic outcomes or investment recommendations.</p>
-              <p>By mapping the physical prerequisites of the fuel cycle against this legal-regulatory decay matrix, we assess possible long-term geopolitical leverage constraints.</p>
-            </div>
-          }
-        />
-      )}
-
-      {activeModal === 'policy' && (
-        <PolicyModal
-          title="Policy Memo: The Forging Deficit"
-          subtitle="LOSS OF WESTERN ULTRA-HEAVY MANUFACTURING CAPABILITY"
-          onClose={() => setActiveModal(null)}
-          content={
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <p><strong>SUBJECT:</strong> Strategic vulnerability stemming from the global consolidation of ultra-heavy forging presses.</p>
-              <p>The construction of a monolithic Reactor Pressure Vessel (RPV) for some Gen-III+ designs can require very large steel ingots and specialized presses. Western capacity is concentrated, creating potential schedule and supplier exposure.</p>
-
-              <div style={{
-                borderLeft: '2px solid var(--red)',
-                paddingLeft: '1rem',
-                backgroundColor: 'rgba(255, 51, 51, 0.05)',
-                padding: '1rem'
-              }}>
-                <i>"A nation that cannot forge its own pressure vessels cannot dictate its own nuclear sovereignty. Relying on Japan Steel Works (JSW), China First Heavy Industries, or Russia's OMZ for the literal core of domestic power security presents an unhedged geopolitical vulnerability."</i>
-              </div>
-
-              <p>Reconstituting this supply chain is not merely a matter of capital allocation; it requires metallurgical institutional knowledge, heavy industrial zoning, and skilled tradesmen that have withered over four decades of service-economy transition.</p>
-            </div>
-          }
-        />
-      )}
+      <footer className="verification-footer"><span>NUCLEAR ENERGY INTELLIGENCE</span><span>Public data · declared limits · reproducible method</span></footer>
     </>
   );
-};
-
-export default App;
+}
