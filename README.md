@@ -20,7 +20,7 @@
 
 ## Current method
 
-The scheduled refresh reads the [Our World in Data nuclear-electricity CSV](https://ourworldindata.org/grapher/share-electricity-nuclear.csv), selects each country's latest annual observation, rounds the share to one decimal, and records that country's observation year. Publication requires at least 20 matched countries and a latest available year of 2023 or newer. A failed source check retains the last good snapshot and marks the check as retained. The public interface displays only these source-traced shares.
+The scheduled refresh reads the [Our World in Data nuclear-electricity CSV](https://ourworldindata.org/grapher/share-electricity-nuclear.csv), selects each country's latest annual observation, rounds the share to one decimal, and records that country's observation year. Publication requires valid observations for all selected countries and a latest available year within the past three years. A failed source check retains the last good snapshot and marks the check as retained. The public interface displays only these source-traced shares.
 
 The previous `src/data/exposure.json`, `reactors.json`, `chokepoints.json`, and `uranium_cycle.json` remain in Git history and the repository as **unverified research reference material**. Their manually entered counts, capacities, costs, delays, capacity-factor sequences, and market shares lack record-level primary-source citations and are excluded from the public bundle. Do not use them as current measurements.
 

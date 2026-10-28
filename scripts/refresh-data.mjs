@@ -1,4 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { latestObservations, validateCoverage } from "./observations.mjs";
 
 const SOURCE_URL = "https://ourworldindata.org/grapher/share-electricity-nuclear.csv";
 const sharesUrl = new URL("../src/data/verified-shares.json", import.meta.url);
@@ -60,15 +61,7 @@ try {
   if (!response.ok) throw new Error(`source returned HTTP ${response.status}`);
 
   const lines = (await response.text()).trim().split(/\r?\n/);
-  const latestByEntity = new Map();
-  for (const line of lines.slice(1)) {
-    const [entity, , yearText, valueText] = parseCsvLine(line);
-    const year = Number(yearText);
-    const value = Number(valueText);
-    if (!entity || !Number.isFinite(year) || !Number.isFinite(value)) continue;
-    const current = latestByEntity.get(entity);
-    if (!current || year > current.year) latestByEntity.set(entity, { year, value });
-  }
+  const latestByEntity = latestObservations(lines, parseCsvLine);
 
   let matches = 0;
   let dataThroughYear = 0;
@@ -81,9 +74,7 @@ try {
     return { ...row, nuclearSharePct: Number(latest.value.toFixed(1)), observationYear: latest.year };
   }).sort((a, b) => b.nuclearSharePct - a.nuclearSharePct);
 
-  if (matches < 20 || dataThroughYear < 2023) {
-    throw new Error(`source validation failed (${matches} matches; latest year ${dataThroughYear})`);
-  }
+  validateCoverage(matches, exposure.length, dataThroughYear);
 
   await writeFile(sharesUrl, `${JSON.stringify(refreshed, null, 2)}\n`);
   await writeFreshness(previous, "current", `Updated ${matches} country shares from the latest available annual series.`, dataThroughYear);

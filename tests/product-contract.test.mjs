@@ -38,7 +38,7 @@ test("the public view shows only source-traced shares", () => {
 
 test("method and limits are visible beside the data", () => {
   assert.match(app, /latest available annual observation/);
-  assert.match(app, /at least 20 country matches/);
+  assert.match(app, /valid observation for every selected country/);
   assert.match(app, /last known good values were retained/);
   assert.match(app, /not a complete global reactor inventory or a forecast/);
   assert.match(app, /Read the refresh method/);

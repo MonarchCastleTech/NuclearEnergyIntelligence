@@ -100,7 +100,7 @@ export default function App() {
             <h2 id="method-title">One measure, one source trail.</h2>
           </div>
           <div>
-            <p>The scheduled refresh reads the public Our World in Data CSV, selects the latest annual nuclear-electricity share for each named country, rounds it to one decimal place, and records its observation year. It requires at least 20 country matches and a latest source year of at least 2023 before replacing the last good snapshot.</p>
+            <p>The scheduled refresh reads the public Our World in Data CSV, selects the latest annual nuclear-electricity share for each named country, rounds it to one decimal place, and records its observation year. It requires a valid observation for every selected country and a latest source year within the past three years before replacing the last good snapshot.</p>
             <p>Last source check: <time dateTime={freshness.checkedAt}>{sourceCheck}</time>. {freshness.status === 'current' ? 'The source refresh succeeded.' : 'The last known good values were retained because the latest source check failed.'} This is a selected-country comparison, not a complete global reactor inventory or a forecast.</p>
             <a className="verification-source" href={freshness.sourceUrl} target="_blank" rel="noreferrer">Open the source CSV ↗</a>
             <a className="verification-source" href="https://github.com/MonarchCastleTech/NuclearEnergyIntelligence/blob/main/scripts/refresh-data.mjs" target="_blank" rel="noreferrer">Read the refresh method ↗</a>
